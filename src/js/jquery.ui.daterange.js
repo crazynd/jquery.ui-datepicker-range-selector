@@ -47,6 +47,7 @@ $(function() {
 			inst.selectedStartElement = $('a', td);
 			inst.selectedStartElement.addClass('ui-state-range ui-state-range-start');
 		} else {
+			// Second click, this one is the end-date!
 			// Reset the old:
 			if(inst.selectedEndElement) {
 				inst.selectedEndElement.removeClass('ui-state-range ui-state-range-end');
@@ -56,6 +57,21 @@ $(function() {
 			inst.selectedEndDate = new Date(year, month, $('a', td).html());
 			inst.selectedEndElement = $('a', td);
 			inst.selectedEndElement.addClass('ui-state-range ui-state-range-end');
+			// If endDate < startDate, switch them:
+			if(inst.selectedEndDate < inst.selectedStartDate) {
+				inst.selectedStartElement.removeClass('ui-state-range-start');
+				inst.selectedEndElement.removeClass('ui-state-range-end');
+
+				tmp = inst.selectedStartDate;
+				inst.selectedStartDate = inst.selectedEndDate;
+				inst.selectedEndDate = tmp;
+				tmp = inst.selectedStartElement;
+				inst.selectedStartElement = inst.selectedEndElement;
+				inst.selectedEndElement = tmp;
+
+				inst.selectedStartElement.addClass('ui-state-range-start');
+				inst.selectedEndElement.addClass('ui-state-range-end');
+			}
 			// Now that we have a range:
 			this._colorizeDateRange(inst);
 		}
