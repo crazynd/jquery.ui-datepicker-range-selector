@@ -1,0 +1,45 @@
+<!DOCTYPE HTML>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<title>jQuery UI Calendar Test</title>
+		<script type="text/javascript" src="../library/jquery-ui-1-1.8.5.custom/development-bundle/jquery-1.4.2.js"></script>
+		<script type="text/javascript" src="../library/jquery-ui-1-1.8.5.custom/development-bundle/ui/jquery.ui.core.js"></script>
+		<script type="text/javascript" src="../library/jquery-ui-1-1.8.5.custom/development-bundle/ui/jquery.ui.datepicker.js"></script>
+		<script type="text/javascript" src="../src/js/jquery.ui.daterange.js"></script>
+		<link rel="stylesheet" href="../library/jquery-ui-1-1.8.5.custom/development-bundle/themes/base/jquery.ui.all.css">
+		<link rel="stylesheet" href="../library/jquery-ui-1-1.8.5.custom/development-bundle/demos/demos.css">
+		<link rel="stylesheet" href="../src/css/jquery.ui.daterange.css">
+		<style type="text/css">
+		</style>
+		<script>
+			$(function() {
+				$("#datepicker").datepicker({
+					numberOfMonths: 2,
+					showButtonPanel: true,
+					closeText: 'Fertig',
+					currentText: 'Heute',
+					dateFormat: 'dd.mm.yy',
+					dayNamesMin: ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'],
+					monthNames: ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'],
+					nextText: 'Nächster Monat',
+					prevText: 'Vorheriger Monat',
+					showOtherMonths: true,
+					rangeFieldStart: '#datepicker-start',
+					rangeFieldEnd: '#datepicker-end',
+					onClose: function(index, inst) {
+						$(inst.settings.rangeFieldStart).val($.datepicker._formatDate(inst, inst.selectedStartDate));
+						$(inst.settings.rangeFieldEnd).val($.datepicker._formatDate(inst, inst.selectedEndDate));
+					},
+				});
+			});
+		</script>
+	</head>
+	<body>
+		<div class="demo">
+			<p>Start: <input type="text" id="datepicker"></p>
+			<p>Start: <input type="text" id="datepicker-start"></p>
+			<p>End: <input type="text" id="datepicker-end"></p>
+		</div>
+	</body>
+</html>

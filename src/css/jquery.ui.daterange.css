@@ -1,0 +1,26 @@
+.ui-widget-content .ui-state-range {
+	border-top: 1px solid blue;
+	border-bottom: 1px solid blue;
+}
+.ui-widget-content .ui-state-range-start {
+	border-left: 1px solid blue;
+	-webkit-border-top-left-radius: 3px;
+	-webkit-border-bottom-left-radius: 3px;
+	-moz-border-radius-topleft: 3px;
+	-moz-border-radius-bottomleft: 3px;
+	border-top-left-radius: 3px;
+	border-bottom-left-radius: 3px;
+}
+.ui-widget-content .ui-state-range-end {
+	border-right: 1px solid blue;
+	-webkit-border-top-right-radius: 3px;
+	-webkit-border-bottom-right-radius: 3px;
+	-moz-border-radius-topright: 3px;
+	-moz-border-radius-bottomright: 3px;
+	border-top-right-radius: 3px;
+	border-bottom-right-radius: 3px;
+}
+.ui-widget-content .ui-datepicker-closebutton-disabled {
+	background-color: red;
+	color: #ccc;
+}
