@@ -81,13 +81,13 @@ $(function() {
 		inst.closeButtonEnabled = true;
 		$('.ui-datepicker-close').removeAttr('disabled');
 		$('.ui-datepicker-close').removeClass('ui-datepicker-closebutton-disabled');
-	}
+	};
 	$.datepicker._deactivateCloseButton = function(inst) {
 		inst.closeButtonEnabled = false;
 		$('.ui-datepicker-close').attr('disabled', 'disabled');
 		$('.ui-datepicker-close').addClass('ui-datepicker-closebutton-disabled');
 
-	}
+	};
 
 	$.datepicker._colorizeDateRange = function(inst) {
 		// Find out which month is which:
@@ -148,7 +148,7 @@ $(function() {
 				});
 
 		}
-	}
+	};
 
 	// We have to convert to a number to find out where we are.
 	$.datepicker._convertFromMonthNameToNumber = function(inst, name) {
@@ -159,5 +159,5 @@ $(function() {
 				}
 			});
 		return monthNumber;
-	}
+	};
 });
