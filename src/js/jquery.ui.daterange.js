@@ -25,8 +25,7 @@ $(function() {
 			return;
 		}
 		var inst = this._getInst(target[0]);
-		// Determine if it's the start date or the end date
-		// we just selected.
+		// Determine if it's the start date or the end date we just selected.
 		if($.datepicker._startDateRange) {
 			// Reset the old state:
 			if(inst.selectedStartElement) {
@@ -47,8 +46,7 @@ $(function() {
 			inst.selectedStartElement = $('a', td);
 			inst.selectedStartElement.addClass('ui-state-range ui-state-range-start');
 		} else {
-			// Second click, this one is the end-date!
-			// Reset the old:
+			// Second click, this one is the end-date! Reset the old:
 			if(inst.selectedEndElement) {
 				inst.selectedEndElement.removeClass('ui-state-range ui-state-range-end');
 			}
@@ -90,71 +88,55 @@ $(function() {
 	};
 
 	$.datepicker._colorizeDateRange = function(inst) {
-		// Find out which month is which:
-		firstMonth = $('.ui-datepicker-month', '.ui-datepicker-group-first').html();
-		lastMonth = $('.ui-datepicker-month', '.ui-datepicker-group-last').html();
-		firstMonthNumber = $.datepicker._convertFromMonthNameToNumber(inst, firstMonth);
-		lastMonthNumber = $.datepicker._convertFromMonthNameToNumber(inst, lastMonth);
-
-		start = inst.selectedStartDate;
-		end = inst.selectedEndDate;
 		inst.selectedRange = [];
-
-		if(! inst.selectedStartDate > inst.selectedEndDate) {
-			tmp = start;
-			start = end;
-			end = tmp;
-		}
-
-		// Both dates are in first month
-		if(start.getMonth() === firstMonthNumber && end.getMonth() === firstMonthNumber) {
-			allDays = $('div.ui-datepicker-group-first table.ui-datepicker-calendar td');
-			$.each(allDays, function(index, row){
-				day = $('a', row);
-				if( day.html() > start.getDate() && day.html() < end.getDate() ) {
-					day.addClass('ui-state-range');
-					inst.selectedRange.push(day);
+		// For every month displayed…
+		$('#ui-datepicker-div').find('.ui-datepicker-group').each(function() {
+				var daysToColorize = [];
+				// check if this month is in the range we clicked
+				if($.datepicker._getMonthAsNumber(inst, this) >= inst.selectedStartDate.getMonth() 
+				&& $.datepicker._getMonthAsNumber(inst, this) <= inst.selectedEndDate.getMonth()) {
+					var month = $.datepicker._getMonthAsNumber(inst, this);
+					days = $(this).find('table.ui-datepicker-calendar td');
+					$.each(days, function(index, row){
+						day = $('a', row);
+						// If this month contains both the StartDate and the EndDate
+						if( month == inst.selectedStartDate.getMonth() && month == inst.selectedEndDate.getMonth() ) {
+							if( day.html() > inst.selectedStartDate.getDate() && day.html() < inst.selectedEndDate.getDate() ) {
+								day.addClass('ui-state-range');
+								inst.selectedRange.push(day);
+							}
+						} else {
+							// If this month only contains the StartDate
+							if( month == inst.selectedStartDate.getMonth() ) {
+								if( day.html() > inst.selectedStartDate.getDate() ) {
+									day.addClass('ui-state-range');
+									inst.selectedRange.push(day);
+								}
+							}
+							// If this month only contains the EndDate
+							else if( month == inst.selectedEndDate.getMonth() ) {
+								if( day.html() < inst.selectedEndDate.getDate() ) {
+									day.addClass('ui-state-range');
+									inst.selectedRange.push(day);
+								}
+							}
+							// If this is a month between Start and EndDate
+							else if( month > inst.selectedStartDate.getMonth() && month < inst.selectedEndDate.getMonth() ) {
+								day.addClass('ui-state-range');
+								inst.selectedRange.push(day);
+							}
+						}
+					});
 				}
 			});
-		}
-		// Both dates are in the last month
-		if(start.getMonth() === lastMonthNumber && end.getMonth() === lastMonthNumber) {
-			allDays = $('div.ui-datepicker-group-last table.ui-datepicker-calendar td');
-			$.each(allDays, function(index, row){
-					day = $('a', row);
-					if( day.html() > start.getDate() && day.html() < end.getDate() ) {
-						day.addClass('ui-state-range');
-						inst.selectedRange.push(day);
-					}
-				});
-		}
-		// Both dates are in seperate months
-		if(start.getMonth() === firstMonthNumber && end.getMonth() === lastMonthNumber) {
-			firstMonthDays = $('div.ui-datepicker-group-first table.ui-datepicker-calendar td');
-			lastMonthDays = $('div.ui-datepicker-group-last table.ui-datepicker-calendar td');
-			$.each(firstMonthDays, function(index, row){
-					day = $('a', row);
-					if( day.html() > start.getDate() ) {
-						day.addClass('ui-state-range');
-						inst.selectedRange.push(day);
-					}
-				});
-			$.each(lastMonthDays, function(index, row){
-					day = $('a', row);
-					if( day.html() < end.getDate() ) {
-						day.addClass('ui-state-range');
-						inst.selectedRange.push(day);
-					}
-				});
-
-		}
 	};
 
-	// We have to convert to a number to find out where we are.
-	$.datepicker._convertFromMonthNameToNumber = function(inst, name) {
+	// Find out the month of the given datepicker-group and return the number
+	$.datepicker._getMonthAsNumber = function(inst, month) {
 		monthNumber = 0;
+		monthName = $(month).find('.ui-datepicker-month').html();
 		$.each(inst.settings.monthNames, function(index, value) {
-				if( value === name ) {
+				if( value === monthName ) {
 					monthNumber = index;
 				}
 			});
