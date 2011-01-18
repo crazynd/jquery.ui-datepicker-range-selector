@@ -8,7 +8,7 @@
  * Depends on jquery.ui.datepicker.js >= 1.8.5
  *
  * @author Andreas Lappe <nd@off-pist.de>
- * @version 0.0.1
+ * @version 0.0.2
  */
 $(function() {
 	// Disable the button first, ask questions later:
@@ -93,8 +93,7 @@ $(function() {
 		$('#ui-datepicker-div').find('.ui-datepicker-group').each(function() {
 				var daysToColorize = [];
 				// check if this month is in the range we clicked
-				if($.datepicker._getMonthAsNumber(inst, this) >= inst.selectedStartDate.getMonth() 
-				&& $.datepicker._getMonthAsNumber(inst, this) <= inst.selectedEndDate.getMonth()) {
+				if($.datepicker._getMonthAsNumber(inst, this) >= inst.selectedStartDate.getMonth() && $.datepicker._getMonthAsNumber(inst, this) <= inst.selectedEndDate.getMonth()) {
 					var month = $.datepicker._getMonthAsNumber(inst, this);
 					days = $(this).find('table.ui-datepicker-calendar td');
 					$.each(days, function(index, row){
