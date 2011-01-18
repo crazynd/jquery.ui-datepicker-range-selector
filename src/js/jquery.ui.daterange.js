@@ -75,6 +75,21 @@ $(function() {
 		}
 	};
 
+	// Override the adjustDate method to trigger range colorizer on adjust:
+	$.datepicker._adjustDate = function(id, offset, period) {
+		var target = $(id);
+		var inst = $.datepicker._getInst(target[0]);
+		if (this._isDisabledDatepicker(target[0])) {
+			return;
+		}
+		this._adjustInstDate(inst, offset +
+			(period == 'M' ? this._get(inst, 'showCurrentAtPos') : 0), // undo positioning
+			period);
+		this._updateDatepicker(inst);
+		// Here we colorize
+		$.datepicker._colorizeDateRange(inst);
+	};
+
 	$.datepicker._activateCloseButton = function(inst) {
 		inst.closeButtonEnabled = true;
 		$('.ui-datepicker-close').removeAttr('disabled');
@@ -88,6 +103,8 @@ $(function() {
 	};
 
 	$.datepicker._colorizeDateRange = function(inst) {
+		// Only run if both start and end are selected.
+		if(inst.selectedStartDate !== undefined && inst.selectedEndDate !== undefined) {
 		inst.selectedRange = [];
 		// For every month displayed…
 		$('#ui-datepicker-div').find('.ui-datepicker-group').each(function() {
@@ -97,37 +114,51 @@ $(function() {
 					var month = $.datepicker._getMonthAsNumber(inst, this);
 					days = $(this).find('table.ui-datepicker-calendar td');
 					$.each(days, function(index, row){
-						day = $('a', row);
-						// If this month contains both the StartDate and the EndDate
-						if( month == inst.selectedStartDate.getMonth() && month == inst.selectedEndDate.getMonth() ) {
-							if( day.html() > inst.selectedStartDate.getDate() && day.html() < inst.selectedEndDate.getDate() ) {
-								day.addClass('ui-state-range');
-								inst.selectedRange.push(day);
-							}
-						} else {
-							// If this month only contains the StartDate
-							if( month == inst.selectedStartDate.getMonth() ) {
-								if( day.html() > inst.selectedStartDate.getDate() ) {
+							day = $('a', row);
+							// If this month contains both the StartDate and the EndDate
+							if( month == inst.selectedStartDate.getMonth() && month == inst.selectedEndDate.getMonth() ) {
+								if( day.html() == inst.selectedStartDate.getDate() ) {
+										day.addClass('ui-state-range ui-state-range-start');
+										inst.selectedStartElement = day;
+								} else if( day.html() == inst.selectedEndDate.getDate() ) {
+										day.addClass('ui-state-range ui-state-range-end');
+										inst.selectedEndElement = day;
+								} else if( day.html() > inst.selectedStartDate.getDate() && day.html() < inst.selectedEndDate.getDate() ) {
+									day.addClass('ui-state-range');
+									inst.selectedRange.push(day);
+								}
+							} else {
+								// If this month only contains the StartDate
+								if( month == inst.selectedStartDate.getMonth() ) {
+									if( day.html() == inst.selectedStartDate.getDate() ) {
+										day.addClass('ui-state-range ui-state-range-start');
+										inst.selectedStartElement = day;
+									} else if( day.html() > inst.selectedStartDate.getDate() ) {
+										day.addClass('ui-state-range');
+										inst.selectedRange.push(day);
+									}
+								}
+								// If this month only contains the EndDate
+								else if( month == inst.selectedEndDate.getMonth() ) {
+									if( day.html() == inst.selectedEndDate.getDate() ) {
+										day.addClass('ui-state-range ui-state-range-end');
+										inst.selectedEndElement = day;
+									}
+									else if( day.html() < inst.selectedEndDate.getDate() ) {
+										day.addClass('ui-state-range');
+										inst.selectedRange.push(day);
+									}
+								}
+								// If this is a month between Start and EndDate
+								else if( month > inst.selectedStartDate.getMonth() && month < inst.selectedEndDate.getMonth() ) {
 									day.addClass('ui-state-range');
 									inst.selectedRange.push(day);
 								}
 							}
-							// If this month only contains the EndDate
-							else if( month == inst.selectedEndDate.getMonth() ) {
-								if( day.html() < inst.selectedEndDate.getDate() ) {
-									day.addClass('ui-state-range');
-									inst.selectedRange.push(day);
-								}
-							}
-							// If this is a month between Start and EndDate
-							else if( month > inst.selectedStartDate.getMonth() && month < inst.selectedEndDate.getMonth() ) {
-								day.addClass('ui-state-range');
-								inst.selectedRange.push(day);
-							}
-						}
-					});
+						});
 				}
 			});
+		}
 	};
 
 	// Find out the month of the given datepicker-group and return the number
